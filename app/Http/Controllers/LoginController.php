@@ -17,7 +17,6 @@ class LoginController extends Controller
      */
   
      public function login(Request $req){
-         header('Content-type','text/json');
          
         $credentials = [
             "login" => $req->post("email"),
@@ -32,14 +31,14 @@ class LoginController extends Controller
                 'success'=>true,
                 'user'=> $connectedUser
             ];
-            return json_encode($res);
+            return response()->json($res);
         }
 
         $error = [
             "success"=> false,
             "error"=> "Invalid user name or password"
         ];
-        return json_encode($error);
+        return response()->json($error);
 
      }
 
@@ -50,8 +49,8 @@ class LoginController extends Controller
       *  @author sdmg15
       *  @todo Create a Helper class for request responses handling
       */
-    public function register(Request $req)
-    {
+    public function register(Request $req){
+
         $validator = $req->validate([
             'username' => "required|unique:users|max:255",
             "email" => "required|email|unique:users",
@@ -68,7 +67,7 @@ class LoginController extends Controller
                 'success'=> false,
                 'error'=>$errors->all()
             ];
-            return json_encode($error);
+            return response()->json($error);
         }
         /* @TODO : Set activation to false and send an email for verification */
         /* Redirect to /dashboard after success */
@@ -79,28 +78,31 @@ class LoginController extends Controller
                 'success'=> true ,
                 'user' => $user
             ];
-            return json_encode($res);
+            return response()->json($res);
         }
         $error = [
             'success' => false,
             'error' => 'Sorry something went wrong please try again later',
         ];
 
-        return json_encode($error);
+        return response()->json($error);
       
     }
 
+    /**
+     *  Logout the user from the application
+     */
     public function logout(Request $req){
         if( Sentinel::logout() ){
             $res = [
                 'success' => true,
             ];
-            return json_encode($res);
+            return response()->json($res);
         }
             $error = [
                 'success' => false,
                 'error' => 'Sorry something went wrong please try again later',
             ];
-            return json_encode($error);
+            return response()->json($error);
     }
 }
