@@ -17,7 +17,11 @@ class LoginController extends Controller
      */
   
      public function login(Request $req){
+<<<<<<< HEAD
          
+=======
+
+>>>>>>> afaad4050c27eec57c57f6b4e8d60af70748c382
         $credentials = [
             "login" => $req->post("email"),
             "password" => $req->post("password")
@@ -31,14 +35,24 @@ class LoginController extends Controller
                 'success'=>true,
                 'user'=> $connectedUser
             ];
+<<<<<<< HEAD
             return response()->json($res);
+=======
+
+            return response()->json($res, 200);
+>>>>>>> afaad4050c27eec57c57f6b4e8d60af70748c382
         }
 
         $error = [
             "success"=> false,
             "error"=> "Invalid user name or password"
         ];
+<<<<<<< HEAD
         return response()->json($error);
+=======
+
+        return response()->json($error, 403);
+>>>>>>> afaad4050c27eec57c57f6b4e8d60af70748c382
 
      }
 
@@ -56,6 +70,7 @@ class LoginController extends Controller
             "email" => "required|email|unique:users",
             "password" => "required|confirmed",
         ]);
+
         $credentials = [
             "username" => $req->post("username"),
             "email" => $req->post("email"),
@@ -67,26 +82,42 @@ class LoginController extends Controller
                 'success'=> false,
                 'error'=>$errors->all()
             ];
+<<<<<<< HEAD
             return response()->json($error);
+=======
+            
+            return response()->json($error, 403);
+>>>>>>> afaad4050c27eec57c57f6b4e8d60af70748c382
         }
         /* @TODO : Set activation to false and send an email for verification */
         /* Redirect to /dashboard after success */
 
         $user = Sentinel::register($credentials, true);
+
         if( $user ){
             $res = [
-                'success'=> true ,
+                'success'=> true,
                 'user' => $user
             ];
+<<<<<<< HEAD
             return response()->json($res);
+=======
+
+            return response()->json($res, 201);
+>>>>>>> afaad4050c27eec57c57f6b4e8d60af70748c382
         }
+
         $error = [
             'success' => false,
             'error' => 'Sorry something went wrong please try again later',
         ];
 
+<<<<<<< HEAD
         return response()->json($error);
       
+=======
+        return response()->json($error, 500);
+>>>>>>> afaad4050c27eec57c57f6b4e8d60af70748c382
     }
 
     /**
@@ -94,6 +125,7 @@ class LoginController extends Controller
      */
     public function logout(Request $req){
         if( Sentinel::logout() ){
+<<<<<<< HEAD
             $res = [
                 'success' => true,
             ];
@@ -104,5 +136,18 @@ class LoginController extends Controller
                 'error' => 'Sorry something went wrong please try again later',
             ];
             return response()->json($error);
+=======
+            $res = ['success' => true];
+
+            return response()->json($res, 200);
+        }
+
+        $error = [
+            'success' => false,
+            'error' => 'Sorry something went wrong please try again later',
+        ];
+
+        return response()->json($error, 500);
+>>>>>>> afaad4050c27eec57c57f6b4e8d60af70748c382
     }
 }
