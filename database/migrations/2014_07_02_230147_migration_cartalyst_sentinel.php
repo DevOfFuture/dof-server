@@ -106,6 +106,41 @@ class MigrationCartalystSentinel extends Migration
             $table->engine = 'InnoDB';
             $table->unique('email');
         });
+        Schema::create('developers', function (Blueprint $table) {
+
+            $table->increments('id');
+            $table->integer('user_id');
+            $table->string('githubLink');
+            $table->string('fullName');
+            $table->boolean('isVerified');
+        });
+
+        Schema::create('ngo', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('ngoName');
+            $table->string('ngoCountry', 200);
+            $table->text('description');
+            $table->string('website', 200)->nullable();
+            $table->boolean('isVerified');
+        });
+
+        Schema::create('projects', function (Blueprint $table) {
+
+            $table->increments('id');
+            $table->string('projectTitle', 250);
+            $table->text('description');
+            $table->string('level', 100);
+            $table->timestamp('dueDate');
+            $table->integer('ngo_id');
+            $table->string('developersIds', 200)->nullable();
+            $table->string('status');
+        });
+
+        Schema::create('tags', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name', 200);
+            $table->integer('nonce');
+        });
     }
 
     /**
