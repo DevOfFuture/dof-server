@@ -127,7 +127,7 @@ class MigrationCartalystSentinel extends Migration
         Schema::create('projects', function (Blueprint $table) {
 
             $table->increments('id');
-            $table->string('projectTitle', 250);
+            $table->string('projectTitle');
             $table->text('description');
             $table->string('level', 100);
             $table->timestamp('dueDate');
