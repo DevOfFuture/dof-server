@@ -97,9 +97,10 @@ class MigrationCartalystSentinel extends Migration
             $table->increments('id');
             $table->string('email');
             $table->string('password');
+            $table->string('api_token',60)->unique()->nullable();
             $table->text('permissions')->nullable();
             $table->timestamp('last_login')->nullable();
-            $table->string('first_name')->nullable();
+            $table->string('name')->nullable();
             $table->string('last_name')->nullable();
             $table->timestamps();
 
@@ -113,6 +114,9 @@ class MigrationCartalystSentinel extends Migration
             $table->string('githubLink');
             $table->string('fullName');
             $table->boolean('isVerified');
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
         });
 
         Schema::create('ngo', function (Blueprint $table) {
@@ -122,6 +126,9 @@ class MigrationCartalystSentinel extends Migration
             $table->text('description');
             $table->string('website', 200)->nullable();
             $table->boolean('isVerified');
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
         });
 
         Schema::create('projects', function (Blueprint $table) {
@@ -131,15 +138,21 @@ class MigrationCartalystSentinel extends Migration
             $table->text('description');
             $table->string('level', 100);
             $table->timestamp('dueDate');
-            $table->integer('ngo_id');
+            $table->integer('ngo_id')->nullable();
             $table->string('developersIds', 200)->nullable();
             $table->string('status');
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
         });
 
         Schema::create('tags', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 200);
             $table->integer('nonce');
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
         });
     }
 
