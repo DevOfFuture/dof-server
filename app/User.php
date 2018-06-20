@@ -13,7 +13,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = ['email', 'password', 'name', 'last_name'];
+    protected $fillable = ['email', 'password', 'name', 'last_name','developersIds'];
 
     public function generateToken()
     {
