@@ -36,6 +36,11 @@ Route::group(['middleware' => 'auth:api'], function (){
     Route::post('/delete/project/{projects}','ProjectsController@delete');
     Route::post('/update/project/{projects}','ProjectsController@update');
 
+    Route::model('user',App\User::class);
+    Route::get('/profile/{User}','UserController@show');
+
+    Route::get('/project/details/{status?}','ProjectsController@filterProject');
+
 });
 
 Route::post('/login','Auth\LoginController@login');
