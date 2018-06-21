@@ -21,7 +21,7 @@ class LoginController extends Controller
             "login" => $req->post("email"),
             "password" => $req->post("password")
         ];
-        
+  
         $userAuth = Sentinel::authenticate($credentials,true);
 
         if( $userAuth ){

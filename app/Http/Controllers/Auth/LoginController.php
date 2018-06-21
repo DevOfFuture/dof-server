@@ -42,29 +42,32 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $this->validateLogin($request);
+        //  $this->validateLogin($request);
 
         if ($this->attemptLogin($request)) {
             $user = $this->guard()->user();
             $user->generateToken();
 
-            return response()->json([
-                'data' => $user->toArray(),
-            ]);
+            return response()->json(
+                [ 
+                  'status' => 'success',
+                  'data' => $user->toArray(),
+                ]
+            );
         }
 
-        return $this->sendFailedLoginResponse($request);
+        return response()->json(['status' => 'error', 'message'=> "invalid login details" ], 200);
     }
 
     public function logout(Request $request)
-{
-    $user = Auth::guard('api')->user();
+    {
+        $user = Auth::guard('api')->user();
 
-    if ($user) {
-        $user->api_token = null;
-        $user->save();
+        if ($user) {
+            $user->api_token = null;
+            $user->save();
+        }
+
+        return response()->json(['data' => 'User logged out.','user'=> $user ], 200);
     }
-
-    return response()->json(['data' => 'User logged out.','user'=> $user ], 200);
-}
 }
