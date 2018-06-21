@@ -132,17 +132,17 @@ class ProjectsController extends Controller
       * @return JSON
       */
      public function decorateResponse($status=null,$message=null,$data,$params=[]){
+        //  return $data;  
         $response = [
             "status" => "success",
-            "data" => null,
+            "data" => $data,
             "message" => null
         ];
 
         if(isset($status) && $status!=null ) $response["status"] = $status;
         if( isset($message) && $message!=null) $response["message"] = $message;
-        $reponse["data"] = $data;
-
-        if( count($other)> 0){
+        
+        if( count($params)> 0){
             foreach( $params as $key => $value){
                 $response[$key] = $value;
             }
