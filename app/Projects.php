@@ -8,4 +8,8 @@ class Projects extends Model
 {
     //
     protected $fillable= ['projectTitle','description','level','dueDate','status'];
+
+    protected $ngo;
+
+    protected $developers; 
 }

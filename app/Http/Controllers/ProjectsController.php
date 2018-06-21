@@ -20,30 +20,23 @@ class ProjectsController extends Controller
     **/
 
     public function store(Request $request){
+
+        // Validating requests params 
         $request->validate([
             'projectTitle'=> 'bail|required|unique:projects|max:255',
             'description'=> 'required'
         ]);
-
-        $response = [
-            "status" => "success",
-            "data"=> null,
-            "message"=> null
-        ]; 
-        
-            $project = Projects::create($request->all());
-            if( $project ) {
-                $response['data'] = $project;
-                $response['message'] = "Your project has been saved.";
-                return response()->json($response, 201);
-            }
-            else{
-                $response["status"] = "failure";
-                $reponse["message"] = "Something went wrong please try again later";
+     
+        $project = Projects::create($request->all());
+           
+        if( $project ) {
+            $response = $this->decorateResponse("success", "Your project has been saved.", $project);
+            return response()->json($response, 201);
+        }
+        else{
+            $response = $this->decorateResponse("faillure", "Something went wrong please try again later.", null);
             return response()->json($response, 500);
-            }
-
-
+        }
        
     }
 
@@ -66,54 +59,23 @@ class ProjectsController extends Controller
 
     public function update(Request $request, Projects $project ){
 
-        $response = [
-            "status" => "success",
-            "data" => null,
-            "message"=>null
-        ];
         if ($project->update( $request->all())) {
-            $response["data"] = $project;
-            $response["message"]= "Project updated.";
+            $response = $this->decorateResponse("success", "Project updated.", $project);
             return response()->json($response, 200);
         }
-        $response["status"] = "failure";
-        $reponse["message"] = "Something went wrong please try again later";
-
+        $response = $this->decorateResponse("failure", "Something went wrong please try again later.", null);
         return response()->json($response, 200);
-        
     }
 
     /** 
-     *  Retrieve a project by his ID (the primary key)
+     *  Retrieve a project by its ID (the primary key)
      *  @param Request $request
      *  @return JSON 
     **/
 
     public function getOneProject(Projects $project){
-        /** @todo retrieve the list of developers associated to the project 
-         *  And also the NGO Details
-        **/
-
-        // Retrieving developers associated to the project 
-        $developersIds = explode(',',$project->developersIds);
-        $devsList = [];
-        $i = 0; 
-        foreach( $developersIds as $id){
-            $devsList[$i] = Developers::find((int) $id);
-            $i++;   
-        }
-        
-        // Retrieving the NGO associated to the project 
-        $ngo = Ngo::where($project->ngo_id);
-
-        $response = [
-            "status" => "success",
-            "project" => $project,
-            "message" => null,
-            "developers"=> $devsList,
-            "ngo" => $ngo
-        ];
-
+        $this->decorateProject($project);
+        $response = $this->decorateResponse("success", "Project retrieved well.", $project);
         return response()->json($response, 200);
     }
 
@@ -125,21 +87,67 @@ class ProjectsController extends Controller
 
      public function filterProject($status){
          
+        $projects = Projects::where('status',$status)->get();
+        
+        if(count($projects) > 0){
+
+            foreach ($projects as $project) {
+                $this->decorateProject($project);
+            }
+           $response= $this->decorateResponse("success", "Projects retrieved well.",$projects);
+            return response()->json($response, 200);
+        }else{
+            $response = $this->decorateResponse("failure", "Project not found.", $projects);
+            return response()->json($response,500); 
+        }
+        
+     }
+
+
+     /**
+      * Decorates a project with its developers list and the ngo associated
+      * @param App\Project $project
+      * @return void 
+      * 
+      */
+     public function decorateProject(&$project){
+        
+        // Retrieving developers associated to the project 
+        $developersIds = explode(',', $project->developersIds);
+        $devsList = [];
+        $i = 0;
+        foreach ($developersIds as $id) {
+            $devsList[$i] = Developers::find((int)$id);
+            $i++;
+        }
+        // Retrieving the NGO associated to the project 
+        $ngo = Ngo::where($project->ngo_id);
+        $project->ngo = $ngo; 
+        $project->developers = $devsList; 
+     }
+
+     /**
+      * Decorate a response with given data
+      * @param mixed 
+      * @return JSON
+      */
+     public function decorateResponse($status=null,$message=null,$data,$params=[]){
         $response = [
             "status" => "success",
             "data" => null,
             "message" => null
         ];
-        $project = Projects::where('status',$status)->get();
 
-        if(count($project) > 0){
-        $response["data"] = $project;
-            return response()->json($response, 200);
-        }else{
-            $response["message"]="Project not found";
-            $response["status"]= "failure";
-            return response()->json($response,500); 
+        if(isset($status) && $status!=null ) $response["status"] = $status;
+        if( isset($message) && $message!=null) $response["message"] = $message;
+        $reponse["data"] = $data;
+
+        if( count($other)> 0){
+            foreach( $params as $key => $value){
+                $response[$key] = $value;
+            }
         }
+        return $response;
         
      }
 }
